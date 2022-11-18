@@ -1,14 +1,17 @@
 from __future__ import annotations
-import sdl2dll      # Needed DLLs
-import sdl2
-import sdl2.sdlimage as sdlimage
 
-from ship import Ship
-from actor import Actor, State
-from asteroid import Asteroid
-from maths import Vector2D
-from randoms import Random
-import maths
+import sdl2dll      # SDL DLLs
+import sdl2         # SDL
+import sdl2.sdlimage as sdlimage    # SDL Image
+
+import OpenGL.GL as GL
+
+#from ship import Ship
+#from actor import State
+#from asteroid import Asteroid
+#from maths import Vector2D
+#from randoms import Random
+#import maths
 import ctypes
 
 
@@ -72,13 +75,15 @@ class Game:
         # Third, create context for OpenGL (Contains color buff., textures, models, etc.)
         self._m_context = sdl2.SDL_GL_CreateContext(self._m_window)
 
+        """
         # Finally, initialize GLEW (loader... initializes all OpenGL extensions)
-        glew = ctypes.WinDLL("glew/glew32.dll")     # C lib object
-        glew.glewExperimental = glew.GL_TRUE
-        if glew.glewInit() != glew.GLEW_OK:
+        glew = ctypes.WinDLL("glew/glew32.dll")     # C library
+        glew.glewExperimental = GL.GL_TRUE
+        if glew.glewInit() != GL.GLEW_OK:
             sdl2.SDL_Log("GLEW initialization failed")
             return False
-        glew.glGetError()   # Clear benign error
+        GL.glGetError()   # Clear benign error
+        """
 
         # Initialize SDL image library
         if sdlimage.IMG_Init(sdlimage.IMG_INIT_PNG) == 0:
@@ -88,7 +93,7 @@ class Game:
         # Initiate random generator class
         Random.init(4)
 
-        self._load_data()
+        # TODO self._load_data()
 
         # Initial time
         self._m_time_then = sdl2.SDL_GetTicks()
@@ -163,17 +168,16 @@ class Game:
             da.delete()
 
     def _process_output(self) -> None:  # TODO
-        # Clear color-buffer to black
-        #sdl2.SDL_SetRenderDrawColor(self._m_renderer, 0, 0, 0, 255)
-        # sdl2.SDL_RenderClear(self._m_renderer)
+        # Clear color-buffer to gray
+        GL.glClearColor(0.86, 0.86, 0.86, 1.0)
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
-        # Draw sprites
+        # TODO Draw sprites
         # for sprite in self._m_sprites:
         # sprite.draw(self._m_renderer)
 
         # Swap color-buffer to display on screen
-        # sdl2.SDL_RenderPresent(self._m_renderer)
-        pass
+        sdl2.SDL_GL_SwapWindow(self._m_window)
 
     def _load_data(self) -> None:
         # Ship and its components (composed in constructor)
