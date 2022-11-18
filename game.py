@@ -15,8 +15,9 @@ import ctypes
 class Game:
     def __init__(self):
         # TODO add type hinting
-        self._m_window = None
-        self._m_renderer = None
+        self._m_window: sdl2.SDL_Window = None
+        self._m_context: sdl2.SDL_GLContext = None
+        self._m_renderer = None  # TODO
 
         # Lists
         self._m_textures = {}
@@ -33,24 +34,55 @@ class Game:
         self._m_asteroids = []
 
     def initialize(self) -> bool:
-        # Initialize SDL
+        # Initialize SDL library
         result = sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_AUDIO)
         if result != 0:
             sdl2.SDL_Log("SDL initialization failed: ",
                          sdl2.SDL_GetError())
             return False
 
-        # Create window
-        self._m_window = sdl2.SDL_CreateWindow(b"Spaceship Shooter",
+        # First, configure attributes for OpenGL: start
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_PROFILE_MASK,
+                                 sdl2.SDL_GL_CONTEXT_PROFILE_CORE)  # Set core profile
+        # Set version 3.3
+        sdl2.SDL_GL_SetAttribute(
+            sdl2.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MINOR_VERSION, 3)
+        # Set color buffer
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_RED_SIZE,
+                                 8)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_GREEN_SIZE, 8)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_BLUE_SIZE, 8)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_ALPHA_SIZE, 8)
+        # Enable double buffer
+        sdl2.SDL_GL_SetAttribute(
+            sdl2.SDL_GL_DOUBLEBUFFER, 1)
+        # Enable hardware acceleration
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_ACCELERATED_VISUAL, 1)
+        # First, configure attributes for OpenGL: end
+
+        # Second, create window for OpenGL
+        self._m_window = sdl2.SDL_CreateWindow(b"Spaceship Shooter 3D",
                                                sdl2.SDL_WINDOWPOS_CENTERED,
-                                               sdl2.SDL_WINDOWPOS_CENTERED, 1024, 768, 0)
+                                               sdl2.SDL_WINDOWPOS_CENTERED, 1024, 768, sdl2.SDL_WINDOW_OPENGL)
         if self._m_window == None:
             sdl2.SDL_Log("Window failed: ", sdl2.SDL_GetError())
             return False
 
-        # Initialize SDL image
+        # Third, create context for OpenGL (Contains color buff., textures, models, etc.)
+        self._m_context = sdl2.SDL_GL_CreateContext(self._m_window)
+
+        # Finally, initialize GLEW (loader... initializes all OpenGL extensions)
+        glew = ctypes.WinDLL("glew/glew32.dll")     # C lib object
+        glew.glewExperimental = glew.GL_TRUE
+        if glew.glewInit() != glew.GLEW_OK:
+            sdl2.SDL_Log("GLEW initialization failed")
+            return False
+        glew.glGetError()   # Clear benign error
+
+        # Initialize SDL image library
         if sdlimage.IMG_Init(sdlimage.IMG_INIT_PNG) == 0:
-            sdl2.SDL_Log("Image failed: ", sdl2.SDL_GetError())
+            sdl2.SDL_Log("Image initialization failed: ", sdl2.SDL_GetError())
             return False
 
         # Initiate random generator class
@@ -71,9 +103,10 @@ class Game:
 
     def shutdown(self) -> None:
         # Shutdown in reverse
-        # TODO Unload data here
+        self._unload_data()
         sdlimage.IMG_Quit()
-        # sdl2.SDL_DestroyRenderer(self._m_renderer)
+        # TODO sdl2.SDL_DestroyRenderer(self._m_renderer)
+        sdl2.SDL_GL_DeleteContext(self._m_context)
         sdl2.SDL_DestroyWindow(self._m_window)
         sdl2.SDL_Quit()
 
@@ -129,7 +162,7 @@ class Game:
         for da in dead_actors:
             da.delete()
 
-    def _process_output(self) -> None:
+    def _process_output(self) -> None:  # TODO
         # Clear color-buffer to black
         #sdl2.SDL_SetRenderDrawColor(self._m_renderer, 0, 0, 0, 255)
         # sdl2.SDL_RenderClear(self._m_renderer)
