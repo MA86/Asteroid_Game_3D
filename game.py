@@ -9,6 +9,7 @@ import OpenGL.GL as GL
 #from ship import Ship
 #from actor import State
 #from asteroid import Asteroid
+from vertex_array import VertexArray
 #from maths import Vector2D
 #from randoms import Random
 #import maths
@@ -17,16 +18,24 @@ import ctypes
 
 class Game:
     def __init__(self):
-        # TODO add type hinting
+        # For SDL use
         self._m_window: sdl2.SDL_Window = None
         self._m_context: sdl2.SDL_GLContext = None
         self._m_renderer = None  # TODO
 
-        # Lists
+        # All loaded textures
         self._m_textures = {}
+
+        # All actors
         self._m_actors = []
         self._m_pending_actors = []
+
+        # All sprites drawn
         self._m_sprites = []
+
+        # Sprite shader
+        # Sprite mesh (represented by vertex array)
+        self._m_sprite_vertices: VertexArray = None
 
         self._m_updating_actors: bool = False
         self._m_running: bool = True
@@ -178,6 +187,12 @@ class Game:
 
         # Swap color-buffer to display on screen
         sdl2.SDL_GL_SwapWindow(self._m_window)
+
+    def _create_sprite_vertices(self) -> None:
+        # TODO
+        # Vertices describing quad (AKA quad mesh used for all sprites!)
+        self._m_sprite_vertices = VertexArray(
+            vertex_buffer, 4, index_buffer, 6)
 
     def _load_data(self) -> None:
         # Ship and its components (composed in constructor)
