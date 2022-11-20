@@ -5,7 +5,7 @@ import ctypes
 
 class VertexArray:
     """
-    This class encapsulates a model.
+    This class encapsulates a mesh (AKA model).
 
     Future TODO: Test for boolean truth of GL functions before use.
     """

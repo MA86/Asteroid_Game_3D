@@ -3,17 +3,18 @@ from __future__ import annotations
 import sdl2dll      # SDL DLLs
 import sdl2         # SDL
 import sdl2.sdlimage as sdlimage    # SDL Image
-
 import OpenGL.GL as GL
 
-#from ship import Ship
-#from actor import State
-#from asteroid import Asteroid
 from vertex_array import VertexArray
+from shader import Shader
 #from maths import Vector2D
 #from randoms import Random
 #import maths
 import ctypes
+
+#from ship import Ship
+#from actor import State
+#from asteroid import Asteroid
 
 
 class Game:
@@ -34,6 +35,7 @@ class Game:
         self._m_sprites = []
 
         # Sprite shader
+        self._m_sprite_shader: Shader = None
         # Sprite mesh (represented by vertex array)
         self._m_sprite_vertices: VertexArray = None
 
@@ -42,7 +44,7 @@ class Game:
         self._m_time_then: float = 0.0
 
         # Game-specific objects (refs and lists)
-        self._m_ship: "Ship" = None
+        self._m_ship: Ship = None
         self._m_asteroids = []
 
     def initialize(self) -> bool:
@@ -93,6 +95,13 @@ class Game:
             return False
         GL.glGetError()   # Clear benign error
         """
+        # Fourth, load shaders
+        if self._load_shaders():
+            sdl2.SDL_Log("Failed to load shader program")
+            return False
+
+        # Fifth, create quad mesh for drawing
+        self._create_sprite_vertices()
 
         # Initialize SDL image library
         if sdlimage.IMG_Init(sdlimage.IMG_INIT_PNG) == 0:
@@ -100,7 +109,7 @@ class Game:
             return False
 
         # Initiate random generator class
-        Random.init(4)
+        # TODO Random.init(4)
 
         # TODO self._load_data()
 
@@ -188,11 +197,28 @@ class Game:
         # Swap color-buffer to display on screen
         sdl2.SDL_GL_SwapWindow(self._m_window)
 
+    def _load_shaders(self) -> bool:
+        self._m_sprite_shader = Shader()
+        if not self._m_sprite_shader.load("shaders/basic.vert", "shaders/basic.frag"):
+            return False
+        self._m_sprite_shader.set_active()
+
     def _create_sprite_vertices(self) -> None:
-        # TODO
-        # Vertices describing quad (AKA quad mesh used for all sprites!)
+        vertices = [
+            -0.5, 0.5, 0.0,     # vertex 0
+            0.5, 0.5, 0.0,      # vertex 1
+            0.5, -0.5, 0.0,     # vertex 2
+            -0.5, -0.5, 0.0     # vertex 3
+        ]
+
+        indices = [
+            0, 1, 2,
+            2, 3, 0
+        ]
+
+        # Vertices describing a quad (AKA quad mesh used for all sprites!)
         self._m_sprite_vertices = VertexArray(
-            vertex_buffer, 4, index_buffer, 6)
+            vertices, 4, indices, 6)
 
     def _load_data(self) -> None:
         # Ship and its components (composed in constructor)
