@@ -127,7 +127,7 @@ class Game:
     def shutdown(self) -> None:
         # Shutdown in reverse
         self._unload_data()
-        sdlimage.IMG_Quit()
+        sdlimage.IMG_Quit()  # TODO
         # TODO sdl2.SDL_DestroyRenderer(self._m_renderer)
         sdl2.SDL_GL_DeleteContext(self._m_context)
         sdl2.SDL_DestroyWindow(self._m_window)
@@ -245,7 +245,7 @@ class Game:
         if texture != None:
             return texture
         else:
-            # Load image
+            # Load image TODO
             surface = sdlimage.IMG_Load(filename)
             if surface == None:
                 sdl2.SDL_Log("Failed to load image file: ", filename)
