@@ -7,9 +7,9 @@ import OpenGL.GL as GL
 
 from vertex_array import VertexArray
 from shader import Shader
-#from maths import Vector2D
-#from randoms import Random
-#import maths
+from randoms import Random
+from maths import Vector2D
+import maths
 import ctypes
 
 #from ship import Ship
@@ -41,7 +41,7 @@ class Game:
 
         self._m_updating_actors: bool = False
         self._m_running: bool = True
-        self._m_time_then: float = 0.0
+        self._m_time_then: ctypes.c_uint32 = ctypes.c_uint32()
 
         # Game-specific objects (refs and lists)
         self._m_ship: Ship = None
@@ -86,15 +86,6 @@ class Game:
         # Third, create context for OpenGL (Contains color buff., textures, models, etc.)
         self._m_context = sdl2.SDL_GL_CreateContext(self._m_window)
 
-        """
-        # Finally, initialize GLEW (loader... initializes all OpenGL extensions)
-        glew = ctypes.WinDLL("glew/glew32.dll")     # C library
-        glew.glewExperimental = GL.GL_TRUE
-        if glew.glewInit() != GL.GLEW_OK:
-            sdl2.SDL_Log("GLEW initialization failed")
-            return False
-        GL.glGetError()   # Clear benign error
-        """
         # Fourth, load shaders
         if self._load_shaders():
             sdl2.SDL_Log(b"Failed to load shader program")
@@ -109,9 +100,9 @@ class Game:
             return False
 
         # Initiate random generator class
-        # TODO Random.init(4)
+        Random.init(4)
 
-        # TODO self._load_data()
+        self._load_data()
 
         # Initial time
         self._m_time_then = sdl2.SDL_GetTicks()

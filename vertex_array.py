@@ -6,8 +6,6 @@ import ctypes
 class VertexArray:
     """
     This class encapsulates a mesh (AKA model).
-
-    Future TODO: Test for boolean truth of GL functions before use.
     """
 
     def __init__(self, vertices: ctypes.Array, num_verts: ctypes.c_uint, indices: ctypes.Array, num_indices: ctypes.c_uint) -> None:
@@ -24,7 +22,7 @@ class VertexArray:
         GL.glGenVertexArrays(1, ctypes.byref(self._m_vertex_array_id))
         GL.glBindVertexArray(self._m_vertex_array_id)
 
-        # TODO Create vertex buffer, copy vertices to it
+        # Create vertex buffer, copy vertices to it
         GL.glGenBuffers(1, ctypes.byref(self._m_vertex_buffer_id))
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self._m_vertex_buffer_id)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self._m_num_verts *
