@@ -60,21 +60,21 @@ class Shader:
         source_file_obj = open(file_name, "r")
         if source_file_obj:
             # Read file to byte object
-            source_byte_obj = source_file_obj.read().encode()
+            source_byte_obj = bytes(source_file_obj.read(), "utf-8")
             source_file_obj.close()
 
             # Create a shader of specific type
             out_shader_id = GL.glCreateShader(shader_type)
             # Set a source code for this shader
-            GL.glShaderSource(out_shader_id, 1, source_byte_obj, None)
+            GL.glShaderSource(out_shader_id, source_byte_obj)
             # Try to compile this shader
             GL.glCompileShader(out_shader_id)
 
             if not self._is_compiled(out_shader_id):
-                sdl2.SDL_Log("Failed to compile shader: ", file_name)
+                sdl2.SDL_Log(b"Failed to compile shader: ", file_name)
                 return False
         else:
-            sdl2.SDL_Log("Shader file not found: ", file_name)
+            sdl2.SDL_Log(b"Shader file not found: ", file_name)
             return False
 
         return True
@@ -87,7 +87,7 @@ class Shader:
 
         if status != GL.GL_TRUE:
             # TODO later, add debug info using GL.glGetShaderInfoLog()
-            sdl2.SDL_Log("GLSL compile failed")
+            sdl2.SDL_Log(b"GLSL compile failed")
             return False
         return True
 
@@ -100,6 +100,6 @@ class Shader:
 
         if status != GL.GL_TRUE:
             # TODO later, add debug info using GL.glGetProgramInfoLog()
-            sdl2.SDL_Log("GLSL link failed")
+            sdl2.SDL_Log(b"GLSL link failed")
             return False
         return True

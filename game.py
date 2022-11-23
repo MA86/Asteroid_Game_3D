@@ -51,7 +51,7 @@ class Game:
         # Initialize SDL library
         result = sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_AUDIO)
         if result != 0:
-            sdl2.SDL_Log("SDL initialization failed: ",
+            sdl2.SDL_Log(b"SDL initialization failed: ",
                          sdl2.SDL_GetError())
             return False
 
@@ -80,7 +80,7 @@ class Game:
                                                sdl2.SDL_WINDOWPOS_CENTERED,
                                                sdl2.SDL_WINDOWPOS_CENTERED, 1024, 768, sdl2.SDL_WINDOW_OPENGL)
         if self._m_window == None:
-            sdl2.SDL_Log("Window failed: ", sdl2.SDL_GetError())
+            sdl2.SDL_Log(b"Window failed: ", sdl2.SDL_GetError())
             return False
 
         # Third, create context for OpenGL (Contains color buff., textures, models, etc.)
@@ -97,7 +97,7 @@ class Game:
         """
         # Fourth, load shaders
         if self._load_shaders():
-            sdl2.SDL_Log("Failed to load shader program")
+            sdl2.SDL_Log(b"Failed to load shader program")
             return False
 
         # Fifth, create quad mesh for drawing
@@ -105,7 +105,7 @@ class Game:
 
         # Initialize SDL image library
         if sdlimage.IMG_Init(sdlimage.IMG_INIT_PNG) == 0:
-            sdl2.SDL_Log("Image initialization failed: ", sdl2.SDL_GetError())
+            sdl2.SDL_Log(b"Image initialization failed: ", sdl2.SDL_GetError())
             return False
 
         # Initiate random generator class
@@ -190,12 +190,18 @@ class Game:
         GL.glClearColor(0.86, 0.86, 0.86, 1.0)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
-        # TODO Draw sprites
-        # for sprite in self._m_sprites:
-        # sprite.draw(self._m_renderer)
+        # First, set shader and vertex array active 'every frame'
+        self._m_sprite_shader.set_active()
+        self._m_sprite_vertices.set_active()
+
+        # Second, draw sprites
+        for sprite in self._m_sprites:
+            sprite.draw(self._m_sprite_shader)
 
         # Swap color-buffer to display on screen
         sdl2.SDL_GL_SwapWindow(self._m_window)
+
+        return True
 
     def _load_shaders(self) -> bool:
         self._m_sprite_shader = Shader()
@@ -204,17 +210,17 @@ class Game:
         self._m_sprite_shader.set_active()
 
     def _create_sprite_vertices(self) -> None:
-        vertices = [
+        vertices: ctypes.Array = (ctypes.c_float * 12)(
             -0.5, 0.5, 0.0,     # vertex 0
             0.5, 0.5, 0.0,      # vertex 1
             0.5, -0.5, 0.0,     # vertex 2
             -0.5, -0.5, 0.0     # vertex 3
-        ]
+        )
 
-        indices = [
+        indices: ctypes.Array = (ctypes.c_uint * 6)(
             0, 1, 2,
             2, 3, 0
-        ]
+        )
 
         # Vertices describing a quad (AKA quad mesh used for all sprites!)
         self._m_sprite_vertices = VertexArray(
@@ -248,14 +254,14 @@ class Game:
             # Load image TODO
             surface = sdlimage.IMG_Load(filename)
             if surface == None:
-                sdl2.SDL_Log("Failed to load image file: ", filename)
+                sdl2.SDL_Log(b"Failed to load image file: ", filename)
                 return None
             # Create texture
             texture = sdl2.SDL_CreateTextureFromSurface(
                 self._m_renderer, surface)  # TODO
             sdl2.SDL_FreeSurface(surface)
             if texture == None:
-                sdl2.SDL_Log("Failed to create texture: ", filename)
+                sdl2.SDL_Log(b"Failed to create texture: ", filename)
                 return None
 
             # Add texture to dic

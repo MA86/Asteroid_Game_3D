@@ -25,7 +25,10 @@ class SpriteComponent(Component):
 
     def draw(self, shader: Shader) -> None:
         GL.glDrawElements(
-            # TODO
+            GL.GL_TRIANGLES,    # Type of shape to draw
+            6,                  # Indices in index buffer
+            GL.GL_UNSIGNED_INT,  # Type of index
+            GL.GLvoid
         )
 
     def set_texture(self, texture: sdl2.SDL_Texture) -> None:
