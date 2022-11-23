@@ -118,8 +118,10 @@ class Game:
     def shutdown(self) -> None:
         # Shutdown in reverse
         self._unload_data()
-        sdlimage.IMG_Quit()  # TODO
-        # TODO sdl2.SDL_DestroyRenderer(self._m_renderer)
+        self._m_sprite_vertices.delete()
+        self._m_sprite_shader.unload()
+        self._m_sprite_shader.delete()
+        sdlimage.IMG_Quit()  # TODO remove this?
         sdl2.SDL_GL_DeleteContext(self._m_context)
         sdl2.SDL_DestroyWindow(self._m_window)
         sdl2.SDL_Quit()
@@ -181,6 +183,8 @@ class Game:
         GL.glClearColor(0.86, 0.86, 0.86, 1.0)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
+        # TODO Enable alpha blending on color buffer
+
         # First, set shader and vertex array active 'every frame'
         self._m_sprite_shader.set_active()
         self._m_sprite_vertices.set_active()
@@ -200,7 +204,12 @@ class Game:
             return False
         self._m_sprite_shader.set_active()
 
+        # TODO Set the view-projection matrix
+
+        return True
+
     def _create_sprite_vertices(self) -> None:
+        # TODO Add alpha and ...
         vertices: ctypes.Array = (ctypes.c_float * 12)(
             -0.5, 0.5, 0.0,     # vertex 0
             0.5, 0.5, 0.0,      # vertex 1
@@ -236,6 +245,7 @@ class Game:
             sdl2.SDL_DestroyTexture(texture)
         self._m_textures.clear()
 
+    # TODO Complete redo?
     def get_texture(self, filename) -> sdl2.SDL_Texture:
         # Search for texture in dictionary
         texture = self._m_textures.get(filename)
