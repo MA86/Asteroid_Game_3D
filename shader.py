@@ -14,9 +14,9 @@ class Shader:
 
     def __init__(self) -> None:
         # Store shader object IDs
-        self._m_vertex_shader_id: GL.GLuint = GL.GLuint(0)
-        self._m_frag_shader_id: GL.GLuint = GL.GLuint(0)
-        self._m_shader_program_id: GL.GLuint = GL.GLuint(0)
+        self._m_vertex_shader_id: ctypes.c_uint = ctypes.c_uint()
+        self._m_frag_shader_id: ctypes.c_uint = ctypes.c_uint()
+        self._m_shader_program_id: ctypes.c_uint = ctypes.c_uint()
 
     def delete(self) -> None:
         # TODO
@@ -25,8 +25,8 @@ class Shader:
     # Load vertex & frag shaders
     def load(self, vert_name: str, frag_name: str) -> bool:
         # Compile vertex & pixel shaders
-        if (self._compile_shader(vert_name, GL.GL_VERTEX_SHADER, ctypes.byref(self._m_vertex_shader_id)) == False
-                or self._compile_shader(frag_name, GL.GL_FRAGMENT_SHADER, ctypes.byref(self._m_frag_shader_id)) == False):
+        if (self._compile_shader(vert_name, GL.GL_VERTEX_SHADER, "vertex") == False
+                or self._compile_shader(frag_name, GL.GL_FRAGMENT_SHADER, "frag") == False):
             return False
 
         # Link them together to create a 'shader program'
@@ -54,52 +54,76 @@ class Shader:
     def set_matrix_uniform(self) -> None:
         pass
 
-    # Compile specified shader
-    def _compile_shader(self, file_name: str, shader_type: GL.GLenum, out_shader_id: GL.GLuint) -> bool:
-        # Open file
-        source_file_obj = open(file_name, "r")
-        if source_file_obj:
-            # Read file to byte object
-            source_byte_obj = bytes(source_file_obj.read(), "utf-8")
-            source_file_obj.close()
+    # Compile specified shader, TODO simplify this func.
+    def _compile_shader(self, file_name: str, shader_type: GL.GLenum, name: str) -> bool:
+        if name == "vertex":
+            # Open file
+            source_file_obj = open(file_name, "r")
+            if source_file_obj:
+                # Read file to byte object
+                source_byte_obj = source_file_obj.read().encode()
+                source_file_obj.close()
 
-            # Create a shader of specific type
-            out_shader_id = GL.glCreateShader(shader_type)
-            # Set a source code for this shader
-            GL.glShaderSource(out_shader_id, source_byte_obj)
-            # Try to compile this shader
-            GL.glCompileShader(out_shader_id)
+                # Create a shader of specific type
+                self._m_vertex_shader_id = GL.glCreateShader(shader_type)
+                # Set a source code for this shader
+                GL.glShaderSource(self._m_vertex_shader_id, source_byte_obj)
+                # Try to compile this shader
+                GL.glCompileShader(self._m_vertex_shader_id)
 
-            if not self._is_compiled(out_shader_id):
-                sdl2.SDL_Log(b"Failed to compile shader: ", file_name)
+                if not self._is_compiled(self._m_vertex_shader_id):
+                    sdl2.SDL_Log(b"Failed to compile shader: ", file_name)
+                    return False
+            else:
+                sdl2.SDL_Log(b"Shader file not found: ", file_name)
                 return False
-        else:
-            sdl2.SDL_Log(b"Shader file not found: ", file_name)
-            return False
+            return True
 
-        return True
+        elif name == "frag":
+            # Open file
+            source_file_obj = open(file_name, "r")
+            if source_file_obj:
+                # Read file to byte object
+                source_byte_obj = source_file_obj.read().encode()
+                source_file_obj.close()
+
+                # Create a shader of specific type
+                self._m_frag_shader_id = GL.glCreateShader(shader_type)
+                # Set a source code for this shader
+                GL.glShaderSource(self._m_frag_shader_id, source_byte_obj)
+                # Try to compile this shader
+                GL.glCompileShader(self._m_frag_shader_id)
+
+                if not self._is_compiled(self._m_frag_shader_id):
+                    sdl2.SDL_Log(b"Failed to compile shader: ", file_name)
+                    return False
+            else:
+                sdl2.SDL_Log(b"Shader file not found: ", file_name)
+                return False
+
+            return True
+        else:
+            raise NotImplementedError()
 
     # Test whether shader is compiled
-    def _is_compiled(self, shader_id: GL.GLuint) -> bool:
+    def _is_compiled(self, shader_id: ctypes.c_uint) -> bool:
         # Query compile status
-        status: GL.GLint = GL.GLint(0)
-        GL.glGetShaderiv(shader_id, GL.GL_COMPILE_STATUS, ctypes.byref(status))
+        status: int = GL.glGetShaderiv(shader_id, GL.GL_COMPILE_STATUS)
 
         if status != GL.GL_TRUE:
-            # TODO later, add debug info using GL.glGetShaderInfoLog()
-            sdl2.SDL_Log(b"GLSL compile failed")
+            err = GL.glGetShaderInfoLog(shader_id)
+            sdl2.SDL_Log(b"GLSL compile failed because: ", err)
             return False
         return True
 
     # Test whether shaders link
     def _is_valid_program(self) -> bool:
         # Query compile status
-        status: GL.GLint = GL.GLint(0)
-        GL.glGetProgramiv(self._m_shader_program_id,
-                          GL.GL_LINK_STATUS, ctypes.byref(status))
+        status: int = GL.glGetProgramiv(self._m_shader_program_id,
+                                        GL.GL_LINK_STATUS)
 
         if status != GL.GL_TRUE:
-            # TODO later, add debug info using GL.glGetProgramInfoLog()
-            sdl2.SDL_Log(b"GLSL link failed")
+            err = GL.glGetProgramInfoLog(self._m_shader_program_id)
+            sdl2.SDL_Log(b"GLSL link failed because: ", err)
             return False
         return True
