@@ -28,7 +28,7 @@ class SpriteComponent(Component):
             GL.GL_TRIANGLES,    # Type of shape to draw
             6,                  # Indices in index buffer
             GL.GL_UNSIGNED_INT,  # Type of index
-            GL.GLvoid
+            None
         )
 
     def set_texture(self, texture: sdl2.SDL_Texture) -> None:

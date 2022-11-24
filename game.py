@@ -12,8 +12,8 @@ from maths import Vector2D
 import maths
 import ctypes
 
-#from ship import Ship
-#from actor import State
+from ship import Ship
+from actor import State
 #from asteroid import Asteroid
 
 
@@ -87,7 +87,7 @@ class Game:
         self._m_context = sdl2.SDL_GL_CreateContext(self._m_window)
 
         # Fourth, load shaders
-        if self._load_shaders():
+        if not self._load_shaders():
             sdl2.SDL_Log(b"Failed to load shader program")
             return False
 
@@ -120,7 +120,7 @@ class Game:
         self._unload_data()
         self._m_sprite_vertices.delete()
         self._m_sprite_shader.unload()
-        self._m_sprite_shader.delete()
+        del self._m_sprite_shader
         sdlimage.IMG_Quit()  # TODO remove this?
         sdl2.SDL_GL_DeleteContext(self._m_context)
         sdl2.SDL_DestroyWindow(self._m_window)
@@ -231,18 +231,21 @@ class Game:
         self._m_ship = Ship(self)
         self._m_ship.set_position(Vector2D(512.0, 384.0))
         self._m_ship.set_rotation(maths.PI_OVER_TWO)
-
+        # TODO uncomment asteroids
+        """
         # Asteroids and its components (composed in constructor)
         num_asteroids = range(1, 21)
         for i in num_asteroids:
             Asteroid(self)
+        """
 
     def _unload_data(self) -> None:
         while len(self._m_actors) != 0:
             actor = self._m_actors.pop()
             actor.delete()
         for texture in self._m_textures:
-            sdl2.SDL_DestroyTexture(texture)
+            pass
+            # TODO sdl2.SDL_DestroyTexture(texture)
         self._m_textures.clear()
 
     # TODO Complete redo?

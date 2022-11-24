@@ -54,7 +54,7 @@ class Shader:
     def set_matrix_uniform(self) -> None:
         pass
 
-    # Compile specified shader, TODO simplify this func.
+    # Compile specified shader, [TODO simplify this func.]
     def _compile_shader(self, file_name: str, shader_type: GL.GLenum, name: str) -> bool:
         if name == "vertex":
             # Open file

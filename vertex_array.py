@@ -8,10 +8,10 @@ class VertexArray:
     This class encapsulates a mesh (AKA model).
     """
 
-    def __init__(self, vertices: ctypes.Array, num_verts: ctypes.c_uint, indices: ctypes.Array, num_indices: ctypes.c_uint) -> None:
+    def __init__(self, vertices: ctypes.Array, num_verts: int, indices: ctypes.Array, num_indices: int) -> None:
         # Number of vertices & indices in the buffers
-        self._m_num_verts: ctypes.c_uint = num_verts
-        self._m_num_indices: ctypes.c_uint = num_indices
+        self._m_num_verts: int = num_verts
+        self._m_num_indices: int = num_indices
         # OpenGL IDs of the buffers
         self._m_vertex_buffer_id: ctypes.c_uint = ctypes.c_uint(0)
         self._m_index_buffer_id: ctypes.c_uint = ctypes.c_uint(0)
@@ -36,7 +36,7 @@ class VertexArray:
         # Add vertex attributes to vertex array (only one attribute, position!)
         GL.glEnableVertexAttribArray(0)
         GL.glVertexAttribPointer(
-            0, 3, GL.GL_FLOAT, GL.GL_FALSE, ctypes.sizeof(ctypes.c_float) * 3, 0)
+            0, 3, GL.GL_FLOAT, GL.GL_FALSE, ctypes.sizeof(ctypes.c_float) * 3, None)
 
     def delete(self) -> None:
         # Delete in reverse
