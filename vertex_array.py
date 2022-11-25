@@ -33,7 +33,7 @@ class VertexArray:
         GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self._m_num_indices *
                         ctypes.sizeof(ctypes.c_uint), indices, GL.GL_STATIC_DRAW)
 
-        # Add vertex attributes to vertex array (only one attribute, position!)
+        # Identify attributes in the vertex array (only one attribute, position!)
         GL.glEnableVertexAttribArray(0)
         GL.glVertexAttribPointer(
             0, 3, GL.GL_FLOAT, GL.GL_FALSE, ctypes.sizeof(ctypes.c_float) * 3, None)
