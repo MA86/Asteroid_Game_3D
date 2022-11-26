@@ -19,11 +19,14 @@ class Actor:
         # State
         self._m_state: State = State.eALIVE
 
-        # Transform
-        # TODO world transform here
+        # Transform: start
+        # Matrix4 because layout assumes vertices have a z component (x,y,z,w)
+        self._m_world_transform: Matrix4 = None
+        self._m_recompute_world_transform: bool = True
         self._m_position: Vector2D = Vector2D(0.0, 0.0)
         self._m_scale: float = 1.0
         self._m_rotation: float = 0.0
+        # Transform: end
 
         # Components (sorted)
         self._m_components: List[Component] = []
@@ -66,6 +69,13 @@ class Actor:
         # Implementable
         pass
 
+    def compute_world_transform(self) -> None:
+        if self._m_recompute_world_transform:
+            self._m_recompute_world_transform = False
+            # Scale then rotate then translate
+            # TODO
+            pass
+
     def add_component(self, component: Component) -> None:
         # Add based on update order
         index = 0
@@ -84,18 +94,24 @@ class Actor:
 
     def set_position(self, pos: Vector2D) -> None:
         self._m_position = pos
+        self._m_recompute_world_transform = True
 
     def get_scale(self) -> float:
         return self._m_scale
 
     def set_scale(self, scale: float) -> None:
         self._m_scale = scale
+        self._m_recompute_world_transform = True
 
     def get_rotation(self) -> float:
         return self._m_rotation
 
     def set_rotation(self, rotation: float) -> None:
         self._m_rotation = rotation
+        self._m_recompute_world_transform = True
+
+    def get_world_transform(self) -> Matrix4:
+        return self._m_world_transform
 
     def get_forward(self) -> Vector2D:
         # Note: equation (unit circle) returns normalized vector
