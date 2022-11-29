@@ -50,9 +50,28 @@ class Shader:
     def set_active(self) -> None:
         GL.glUseProgram(self._m_shader_program_id)
 
-    # TODO
-    def set_matrix_uniform(self) -> None:
-        pass
+    def set_matrix_uniform(self, name: str, matrix: Matrix4) -> None:
+        # Add NULL character to end of string
+        #name = name.encode()
+
+        # Find uniform var
+        loc: GL.GLuint = GL.glGetUniformLocation(
+            self._m_shader_program_id, name)
+        # TEST
+        # print(list(matrix.m_mat[3]))
+
+        # Send matrix data to uniform var
+        GL.glUniformMatrix4fv(
+            loc,            # Uniform ID
+            1,              # Num of matrices
+            GL.GL_FALSE,     # Transpose [using row vecs]
+            matrix.m_mat    # Pointer to matrix
+        )
+        # TEST
+        #p = (ctypes.c_float * 12)()
+        #p = ((ctypes.c_float * 4) * 4)()
+        #GL.glGetUniformfv(self._m_shader_program_id, loc, p)
+        # print(list(p[0]))
 
     # Compile specified shader, [TODO simplify this func.]
     def _compile_shader(self, file_name: str, shader_type: GL.GLenum, name: str) -> bool:

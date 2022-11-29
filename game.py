@@ -8,7 +8,7 @@ import OpenGL.GL as GL
 from vertex_array import VertexArray
 from shader import Shader
 from randoms import Random
-from maths import Vector2D
+from maths import Vector2D, Matrix4
 import maths
 import ctypes
 
@@ -165,6 +165,7 @@ class Game:
 
         # Add pending actors
         for pending_actor in self._m_pending_actors:
+            pending_actor.compute_world_transform()
             self._m_actors.append(pending_actor)
         self._m_pending_actors.clear()
 
@@ -200,11 +201,13 @@ class Game:
 
     def _load_shaders(self) -> bool:
         self._m_sprite_shader = Shader()
-        if not self._m_sprite_shader.load("shaders/basic.vert", "shaders/basic.frag"):
+        if not self._m_sprite_shader.load("shaders/transform.vert", "shaders/basic.frag"):
             return False
         self._m_sprite_shader.set_active()
 
-        # TODO Set the view-projection matrix
+        # Set the view-projection matrix
+        view_proj: Matrix4 = Matrix4.create_simple_view_proj(1024.0, 768.0)
+        self._m_sprite_shader.set_matrix_uniform("uViewProj", view_proj)
 
         return True
 
@@ -229,7 +232,7 @@ class Game:
     def _load_data(self) -> None:
         # Ship and its components (composed in constructor)
         self._m_ship = Ship(self)
-        self._m_ship.set_position(Vector2D(512.0, 384.0))
+        self._m_ship.set_position(Vector2D(100.0, 100.0))
         self._m_ship.set_rotation(maths.PI_OVER_TWO)
         # TODO uncomment asteroids
         """
@@ -243,9 +246,8 @@ class Game:
         while len(self._m_actors) != 0:
             actor = self._m_actors.pop()
             actor.delete()
-        for texture in self._m_textures:
-            pass
-            # TODO sdl2.SDL_DestroyTexture(texture)
+        for texture in self._m_textures.values():
+            sdl2.SDL_DestroyTexture(texture)
         self._m_textures.clear()
 
     # TODO Complete redo?

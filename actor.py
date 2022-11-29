@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import List         # For hinting
 from enum import Enum           # For enum
 import ctypes
-from maths import Vector2D
+from maths import Vector2D, Vector3D, Matrix4
 import maths
 
 
@@ -45,8 +45,12 @@ class Actor:
 
     def update(self, dt: float) -> None:
         if self._m_state == State.eALIVE:
+            self.compute_world_transform()
+
             self.update_components(dt)
             self.update_actor(dt)
+
+            self.compute_world_transform()
 
     def update_components(self, dt: float) -> None:
         for c in self._m_components:
@@ -73,8 +77,17 @@ class Actor:
         if self._m_recompute_world_transform:
             self._m_recompute_world_transform = False
             # Scale then rotate then translate
-            # TODO
-            pass
+            self._m_world_transform = Matrix4.create_scale_matrix_uniform(
+                self._m_scale)
+            self._m_world_transform = self._m_world_transform * \
+                Matrix4.create_rotation_matrix_z(self._m_rotation)
+            self._m_world_transform = self._m_world_transform * \
+                Matrix4.create_translation_matrix(
+                    Vector3D(self._m_position.x, self._m_position.y, 0.0))
+
+            # Inform components that world transform updated
+            for comp in self._m_components:
+                comp.on_update_world_transform()
 
     def add_component(self, component: Component) -> None:
         # Add based on update order

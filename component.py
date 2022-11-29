@@ -23,7 +23,7 @@ class Component:
         # Implementable
         pass
 
-    # Called when world transform changes
+    # Called when owner's world transform changes
     def on_update_world_transform(self) -> None:
         # Implementable
         pass

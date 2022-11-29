@@ -1,5 +1,6 @@
 from __future__ import annotations
 import math
+import ctypes
 
 """ This Global Namespace contain useful math variables, functions, and classes """
 
@@ -222,3 +223,188 @@ class Vector3D:
     def transform_q(vec: Vector3D, q: Quaternion) -> Vector3D:
         # TODO
         raise NotImplementedError()
+
+
+# 4x4 Matrix
+# [No need to define 3x3 Matrix because OpenGL vertex layout]
+# [uses 4D vectors for everthing]
+class Matrix4:
+    def __init__(self) -> None:
+        # C array storing matrix data
+        CArray = ((ctypes.c_float * 4) * 4)
+        self.m_mat = CArray()
+
+        # Initialize array to identity matrix
+        self.m_mat[0][0] = 1.0
+        self.m_mat[0][1] = 0.0
+        self.m_mat[0][2] = 0.0
+        self.m_mat[0][3] = 0.0
+
+        self.m_mat[1][0] = 0.0
+        self.m_mat[1][1] = 1.0
+        self.m_mat[1][2] = 0.0
+        self.m_mat[1][3] = 0.0
+
+        self.m_mat[2][0] = 0.0
+        self.m_mat[2][1] = 0.0
+        self.m_mat[2][2] = 1.0
+        self.m_mat[2][3] = 0.0
+
+        self.m_mat[3][0] = 0.0
+        self.m_mat[3][1] = 0.0
+        self.m_mat[3][2] = 0.0
+        self.m_mat[3][3] = 1.0
+
+    # Matrix multiplication
+    def __mul__(self, other: Matrix4) -> Matrix4:
+        ret_val: Matrix4 = Matrix4()
+
+        # Row 0
+        ret_val.m_mat[0][0] = self.m_mat[0][0] * other.m_mat[0][0]
+        + self.m_mat[0][1] * other.m_mat[1][0]
+        + self.m_mat[0][2] * other.m_mat[2][0]
+        + self.m_mat[0][3] * other.m_mat[3][0]
+
+        ret_val.m_mat[0][1] = self.m_mat[0][0] * other.m_mat[0][1]
+        + self.m_mat[0][1] * other.m_mat[1][1]
+        + self.m_mat[0][2] * other.m_mat[2][1]
+        + self.m_mat[0][3] * other.m_mat[3][1]
+
+        ret_val.m_mat[0][2] = self.m_mat[0][0] * other.m_mat[0][2]
+        + self.m_mat[0][1] * other.m_mat[1][2]
+        + self.m_mat[0][2] * other.m_mat[2][2]
+        + self.m_mat[0][3] * other.m_mat[3][2]
+
+        ret_val.m_mat[0][3] = self.m_mat[0][0] * other.m_mat[0][3]
+        + self.m_mat[0][1] * other.m_mat[1][3]
+        + self.m_mat[0][2] * other.m_mat[2][3]
+        + self.m_mat[0][3] * other.m_mat[3][3]
+
+        # Row 1
+        ret_val.m_mat[1][0] = self.m_mat[1][0] * other.m_mat[0][0]
+        + self.m_mat[1][1] * other.m_mat[1][0]
+        + self.m_mat[1][2] * other.m_mat[2][0]
+        + self.m_mat[1][3] * other.m_mat[3][0]
+
+        ret_val.m_mat[1][1] = self.m_mat[1][0] * other.m_mat[0][1]
+        + self.m_mat[1][1] * other.m_mat[1][1]
+        + self.m_mat[1][2] * other.m_mat[2][1]
+        + self.m_mat[1][3] * other.m_mat[3][1]
+
+        ret_val.m_mat[1][2] = self.m_mat[1][0] * other.m_mat[0][2]
+        + self.m_mat[1][1] * other.m_mat[1][2]
+        + self.m_mat[1][2] * other.m_mat[2][2]
+        + self.m_mat[1][3] * other.m_mat[3][2]
+
+        ret_val.m_mat[1][3] = self.m_mat[1][0] * other.m_mat[0][3]
+        + self.m_mat[1][1] * other.m_mat[1][3]
+        + self.m_mat[1][2] * other.m_mat[2][3]
+        + self.m_mat[1][3] * other.m_mat[3][3]
+
+        # Row 2
+        ret_val.m_mat[2][0] = self.m_mat[2][0] * other.m_mat[0][0]
+        + self.m_mat[2][1] * other.m_mat[1][0]
+        + self.m_mat[2][2] * other.m_mat[2][0]
+        + self.m_mat[2][3] * other.m_mat[3][0]
+
+        ret_val.m_mat[2][1] = self.m_mat[2][0] * other.m_mat[0][1]
+        + self.m_mat[2][1] * other.m_mat[1][1]
+        + self.m_mat[2][2] * other.m_mat[2][1]
+        + self.m_mat[2][3] * other.m_mat[3][1]
+
+        ret_val.m_mat[2][2] = self.m_mat[2][0] * other.m_mat[0][2]
+        + self.m_mat[2][1] * other.m_mat[1][2]
+        + self.m_mat[2][2] * other.m_mat[2][2]
+        + self.m_mat[2][3] * other.m_mat[3][2]
+
+        ret_val.m_mat[2][3] = self.m_mat[2][0] * other.m_mat[0][3]
+        + self.m_mat[2][1] * other.m_mat[1][3]
+        + self.m_mat[2][2] * other.m_mat[2][3]
+        + self.m_mat[2][3] * other.m_mat[3][3]
+
+        # Row 3
+        ret_val.m_mat[3][0] = self.m_mat[3][0] * other.m_mat[0][0]
+        + self.m_mat[3][1] * other.m_mat[1][0]
+        + self.m_mat[3][2] * other.m_mat[2][0]
+        + self.m_mat[3][3] * other.m_mat[3][0]
+
+        ret_val.m_mat[3][1] = self.m_mat[3][0] * other.m_mat[0][1]
+        + self.m_mat[3][1] * other.m_mat[1][1]
+        + self.m_mat[3][2] * other.m_mat[2][1]
+        + self.m_mat[3][3] * other.m_mat[3][1]
+
+        ret_val.m_mat[3][2] = self.m_mat[3][0] * other.m_mat[0][2]
+        + self.m_mat[3][1] * other.m_mat[1][2]
+        + self.m_mat[3][2] * other.m_mat[2][2]
+        + self.m_mat[3][3] * other.m_mat[3][2]
+
+        ret_val.m_mat[3][3] = self.m_mat[3][0] * other.m_mat[0][3]
+        + self.m_mat[3][1] * other.m_mat[1][3]
+        + self.m_mat[3][2] * other.m_mat[2][3]
+        + self.m_mat[3][3] * other.m_mat[3][3]
+
+        return ret_val
+
+    # Create a scale matrix with x, y, and z scales
+    @staticmethod
+    def create_scale_matrix_xyz(xscale: float, yscale: float, zscale: float) -> Matrix4:
+        temp: Matrix4 = Matrix4()
+
+        temp.m_mat[0][0] = xscale
+        temp.m_mat[1][1] = yscale
+        temp.m_mat[2][2] = zscale
+        temp.m_mat[3][3] = 1.0
+
+        return temp
+
+    # Create a scale matrix with uniform factor
+    @staticmethod
+    def create_scale_matrix_uniform(scale: float) -> Matrix4:
+        return Matrix4.create_scale_matrix_xyz(scale, scale, scale)
+
+    # TODO Create rotation matrix about x-axis
+    # TODO Create rotation matrix about y-axix
+
+    # Create rotation matrix about z-axis
+    @staticmethod
+    def create_rotation_matrix_z(theta: float) -> Matrix4:
+        temp: Matrix4 = Matrix4()
+
+        temp.m_mat[0][0] = cos(theta)
+        temp.m_mat[0][1] = sin(theta)
+        temp.m_mat[1][0] = -sin(theta)
+        temp.m_mat[1][1] = cos(theta)
+        temp.m_mat[2][2] = 1.0
+        temp.m_mat[3][3] = 1.0
+
+        return temp
+
+    # Create translation matrix
+    @staticmethod
+    def create_translation_matrix(trans: Vector3D) -> Matrix4:
+        temp: Matrix4 = Matrix4()
+
+        temp.m_mat[0][0] = 1.0
+        temp.m_mat[1][1] = 1.0
+        temp.m_mat[2][2] = 1.0
+        temp.m_mat[3][0] = trans.x
+        temp.m_mat[3][1] = trans.y
+        temp.m_mat[3][2] = trans.z
+        temp.m_mat[3][3] = 1.0
+
+        return temp
+
+    # Create a 'simple' view-proj matrix
+    @staticmethod
+    def create_simple_view_proj(width: float, height: float) -> Matrix4:
+        temp: Matrix4 = Matrix4()
+
+        temp.m_mat[0][0] = 2.0 / width
+        temp.m_mat[1][1] = 2.0 / height
+        temp.m_mat[2][2] = 1.0
+        temp.m_mat[3][2] = 1.0
+        temp.m_mat[3][3] = 1.0
+
+        return temp
+
+    # TODO, add additional matrix4 operations
