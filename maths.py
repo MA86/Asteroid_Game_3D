@@ -260,88 +260,72 @@ class Matrix4:
         ret_val: Matrix4 = Matrix4()
 
         # Row 0
-        ret_val.m_mat[0][0] = self.m_mat[0][0] * other.m_mat[0][0]
-        + self.m_mat[0][1] * other.m_mat[1][0]
-        + self.m_mat[0][2] * other.m_mat[2][0]
-        + self.m_mat[0][3] * other.m_mat[3][0]
+        ret_val.m_mat[0][0] = self.m_mat[0][0] * other.m_mat[0][0] + self.m_mat[0][1] * \
+            other.m_mat[1][0] + self.m_mat[0][2] * \
+            other.m_mat[2][0] + self.m_mat[0][3] * other.m_mat[3][0]
 
-        ret_val.m_mat[0][1] = self.m_mat[0][0] * other.m_mat[0][1]
-        + self.m_mat[0][1] * other.m_mat[1][1]
-        + self.m_mat[0][2] * other.m_mat[2][1]
-        + self.m_mat[0][3] * other.m_mat[3][1]
+        ret_val.m_mat[0][1] = self.m_mat[0][0] * other.m_mat[0][1] + self.m_mat[0][1] * \
+            other.m_mat[1][1] + self.m_mat[0][2] * \
+            other.m_mat[2][1] + self.m_mat[0][3] * other.m_mat[3][1]
 
-        ret_val.m_mat[0][2] = self.m_mat[0][0] * other.m_mat[0][2]
-        + self.m_mat[0][1] * other.m_mat[1][2]
-        + self.m_mat[0][2] * other.m_mat[2][2]
-        + self.m_mat[0][3] * other.m_mat[3][2]
+        ret_val.m_mat[0][2] = self.m_mat[0][0] * other.m_mat[0][2] + self.m_mat[0][1] * \
+            other.m_mat[1][2] + self.m_mat[0][2] * \
+            other.m_mat[2][2] + self.m_mat[0][3] * other.m_mat[3][2]
 
-        ret_val.m_mat[0][3] = self.m_mat[0][0] * other.m_mat[0][3]
-        + self.m_mat[0][1] * other.m_mat[1][3]
-        + self.m_mat[0][2] * other.m_mat[2][3]
-        + self.m_mat[0][3] * other.m_mat[3][3]
+        ret_val.m_mat[0][3] = self.m_mat[0][0] * other.m_mat[0][3] + self.m_mat[0][1] * \
+            other.m_mat[1][3] + self.m_mat[0][2] * \
+            other.m_mat[2][3] + self.m_mat[0][3] * other.m_mat[3][3]
 
         # Row 1
-        ret_val.m_mat[1][0] = self.m_mat[1][0] * other.m_mat[0][0]
-        + self.m_mat[1][1] * other.m_mat[1][0]
-        + self.m_mat[1][2] * other.m_mat[2][0]
-        + self.m_mat[1][3] * other.m_mat[3][0]
+        ret_val.m_mat[1][0] = self.m_mat[1][0] * other.m_mat[0][0] + self.m_mat[1][1] * \
+            other.m_mat[1][0] + self.m_mat[1][2] * \
+            other.m_mat[2][0] + self.m_mat[1][3] * other.m_mat[3][0]
 
-        ret_val.m_mat[1][1] = self.m_mat[1][0] * other.m_mat[0][1]
-        + self.m_mat[1][1] * other.m_mat[1][1]
-        + self.m_mat[1][2] * other.m_mat[2][1]
-        + self.m_mat[1][3] * other.m_mat[3][1]
+        ret_val.m_mat[1][1] = self.m_mat[1][0] * other.m_mat[0][1] + self.m_mat[1][1] * \
+            other.m_mat[1][1] + self.m_mat[1][2] * \
+            other.m_mat[2][1] + self.m_mat[1][3] * other.m_mat[3][1]
 
-        ret_val.m_mat[1][2] = self.m_mat[1][0] * other.m_mat[0][2]
-        + self.m_mat[1][1] * other.m_mat[1][2]
-        + self.m_mat[1][2] * other.m_mat[2][2]
-        + self.m_mat[1][3] * other.m_mat[3][2]
+        ret_val.m_mat[1][2] = self.m_mat[1][0] * other.m_mat[0][2] + self.m_mat[1][1] * \
+            other.m_mat[1][2] + self.m_mat[1][2] * \
+            other.m_mat[2][2] + self.m_mat[1][3] * other.m_mat[3][2]
 
-        ret_val.m_mat[1][3] = self.m_mat[1][0] * other.m_mat[0][3]
-        + self.m_mat[1][1] * other.m_mat[1][3]
-        + self.m_mat[1][2] * other.m_mat[2][3]
-        + self.m_mat[1][3] * other.m_mat[3][3]
+        ret_val.m_mat[1][3] = self.m_mat[1][0] * other.m_mat[0][3] + self.m_mat[1][1] * \
+            other.m_mat[1][3] + self.m_mat[1][2] * \
+            other.m_mat[2][3] + self.m_mat[1][3] * other.m_mat[3][3]
 
         # Row 2
-        ret_val.m_mat[2][0] = self.m_mat[2][0] * other.m_mat[0][0]
-        + self.m_mat[2][1] * other.m_mat[1][0]
-        + self.m_mat[2][2] * other.m_mat[2][0]
-        + self.m_mat[2][3] * other.m_mat[3][0]
+        ret_val.m_mat[2][0] = self.m_mat[2][0] * other.m_mat[0][0] + self.m_mat[2][1] * \
+            other.m_mat[1][0] + self.m_mat[2][2] * \
+            other.m_mat[2][0] + self.m_mat[2][3] * other.m_mat[3][0]
 
-        ret_val.m_mat[2][1] = self.m_mat[2][0] * other.m_mat[0][1]
-        + self.m_mat[2][1] * other.m_mat[1][1]
-        + self.m_mat[2][2] * other.m_mat[2][1]
-        + self.m_mat[2][3] * other.m_mat[3][1]
+        ret_val.m_mat[2][1] = self.m_mat[2][0] * other.m_mat[0][1] + self.m_mat[2][1] * \
+            other.m_mat[1][1] + self.m_mat[2][2] * \
+            other.m_mat[2][1] + self.m_mat[2][3] * other.m_mat[3][1]
 
-        ret_val.m_mat[2][2] = self.m_mat[2][0] * other.m_mat[0][2]
-        + self.m_mat[2][1] * other.m_mat[1][2]
-        + self.m_mat[2][2] * other.m_mat[2][2]
-        + self.m_mat[2][3] * other.m_mat[3][2]
+        ret_val.m_mat[2][2] = self.m_mat[2][0] * other.m_mat[0][2] + self.m_mat[2][1] * \
+            other.m_mat[1][2] + self.m_mat[2][2] * \
+            other.m_mat[2][2] + self.m_mat[2][3] * other.m_mat[3][2]
 
-        ret_val.m_mat[2][3] = self.m_mat[2][0] * other.m_mat[0][3]
-        + self.m_mat[2][1] * other.m_mat[1][3]
-        + self.m_mat[2][2] * other.m_mat[2][3]
-        + self.m_mat[2][3] * other.m_mat[3][3]
+        ret_val.m_mat[2][3] = self.m_mat[2][0] * other.m_mat[0][3] + self.m_mat[2][1] * \
+            other.m_mat[1][3] + self.m_mat[2][2] * \
+            other.m_mat[2][3] + self.m_mat[2][3] * other.m_mat[3][3]
 
         # Row 3
-        ret_val.m_mat[3][0] = self.m_mat[3][0] * other.m_mat[0][0]
-        + self.m_mat[3][1] * other.m_mat[1][0]
-        + self.m_mat[3][2] * other.m_mat[2][0]
-        + self.m_mat[3][3] * other.m_mat[3][0]
+        ret_val.m_mat[3][0] = self.m_mat[3][0] * other.m_mat[0][0] + self.m_mat[3][1] * \
+            other.m_mat[1][0] + self.m_mat[3][2] * \
+            other.m_mat[2][0] + self.m_mat[3][3] * other.m_mat[3][0]
 
-        ret_val.m_mat[3][1] = self.m_mat[3][0] * other.m_mat[0][1]
-        + self.m_mat[3][1] * other.m_mat[1][1]
-        + self.m_mat[3][2] * other.m_mat[2][1]
-        + self.m_mat[3][3] * other.m_mat[3][1]
+        ret_val.m_mat[3][1] = self.m_mat[3][0] * other.m_mat[0][1] + self.m_mat[3][1] * \
+            other.m_mat[1][1] + self.m_mat[3][2] * \
+            other.m_mat[2][1] + self.m_mat[3][3] * other.m_mat[3][1]
 
-        ret_val.m_mat[3][2] = self.m_mat[3][0] * other.m_mat[0][2]
-        + self.m_mat[3][1] * other.m_mat[1][2]
-        + self.m_mat[3][2] * other.m_mat[2][2]
-        + self.m_mat[3][3] * other.m_mat[3][2]
+        ret_val.m_mat[3][2] = self.m_mat[3][0] * other.m_mat[0][2] + self.m_mat[3][1] * \
+            other.m_mat[1][2] + self.m_mat[3][2] * \
+            other.m_mat[2][2] + self.m_mat[3][3] * other.m_mat[3][2]
 
-        ret_val.m_mat[3][3] = self.m_mat[3][0] * other.m_mat[0][3]
-        + self.m_mat[3][1] * other.m_mat[1][3]
-        + self.m_mat[3][2] * other.m_mat[2][3]
-        + self.m_mat[3][3] * other.m_mat[3][3]
+        ret_val.m_mat[3][3] = self.m_mat[3][0] * other.m_mat[0][3] + self.m_mat[3][1] * \
+            other.m_mat[1][3] + self.m_mat[3][2] * \
+            other.m_mat[2][3] + self.m_mat[3][3] * other.m_mat[3][3]
 
         return ret_val
 

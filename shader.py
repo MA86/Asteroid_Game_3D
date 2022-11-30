@@ -19,7 +19,7 @@ class Shader:
         self._m_shader_program_id: ctypes.c_uint = ctypes.c_uint()
 
     def delete(self) -> None:
-        # TODO
+        # TODO: Perhaps self.unload()? Currently unused
         raise NotImplementedError
 
     # Load vertex & frag shaders
@@ -51,26 +51,22 @@ class Shader:
         GL.glUseProgram(self._m_shader_program_id)
 
     def set_matrix_uniform(self, name: str, matrix: Matrix4) -> None:
-        # Add NULL character to end of string
-        #name = name.encode()
-
-        # Find uniform var
+        # Find uniform shader variable
         loc: GL.GLuint = GL.glGetUniformLocation(
             self._m_shader_program_id, name)
-        # TEST
-        # print(list(matrix.m_mat[3]))
 
-        # Send matrix data to uniform var
+        # Send matrix data to uniform variable
         GL.glUniformMatrix4fv(
             loc,            # Uniform ID
             1,              # Num of matrices
-            GL.GL_FALSE,     # Transpose [using row vecs]
+            GL.GL_TRUE,     # Transpose [using row vecs]
             matrix.m_mat    # Pointer to matrix
         )
-        # TEST
-        #p = (ctypes.c_float * 12)()
-        #p = ((ctypes.c_float * 4) * 4)()
-        #GL.glGetUniformfv(self._m_shader_program_id, loc, p)
+
+        # For Debugging: Seeing uniform's value
+        # p = (ctypes.c_float * 12)()
+        # p = ((ctypes.c_float * 4) * 4)()
+        # GL.glGetUniformfv(self._m_shader_program_id, loc, p)
         # print(list(p[0]))
 
     # Compile specified shader, [TODO simplify this func.]

@@ -26,14 +26,13 @@ class SpriteComponent(Component):
     def draw(self, shader: Shader) -> None:
         # Scale quad mesh by width/height of texture
         scale_mat: Matrix4 = Matrix4.create_scale_matrix_xyz(
-            128.0, 128.0, 1.0)
+            float(self.m_text_width.value + 128),
+            float(self.m_text_height.value + 128),  # TODO fix
+            1.0)
+        # Calculate world transform matrix
         world_mat: Matrix4 = scale_mat * self._m_owner.get_world_transform()
-        # TEST
-        print(list(self._m_owner.get_world_transform().m_mat[0]))
-        print(list(self._m_owner.get_world_transform().m_mat[1]))
-        print(list(self._m_owner.get_world_transform().m_mat[2]))
-        print(list(self._m_owner.get_world_transform().m_mat[3]))
-        # Set world transform
+
+        # Set world transform matrix in shader
         shader.set_matrix_uniform("uWorldTransform", world_mat)
 
         # Draw quad mesh
@@ -44,12 +43,13 @@ class SpriteComponent(Component):
             None
         )
 
-    def set_texture(self, texture: sdl2.SDL_Texture) -> None:
+    def set_texture(self, texture: sdl2.SDL_Texture) -> None:  # TODO fix
         self.m_texture = texture
 
         # Query height/width for texture
         sdl2.SDL_QueryTexture(texture, None, None,
-                              ctypes.byref(self.m_text_width), ctypes.byref(self.m_text_height))
+                              ctypes.byref(self.m_text_width),
+                              ctypes.byref(self.m_text_height))
 
     def get_draw_order(self) -> int:
         return self.m_draw_order

@@ -34,6 +34,7 @@ class MoveComponent(Component):
         pos = pos + (old_velocity + self._m_velocity) * 0.5 * dt
         ## Velocity Verlet Integration: end ##
 
+        """ TODO: Need adjustment
         # Screen wrapping (for Asteroid only, remove for generic MoveComponent)
         if pos.x < -50.0:
             pos.x = 1100.0
@@ -43,6 +44,8 @@ class MoveComponent(Component):
             pos.y = 800.0
         elif pos.y > 800.0:
             pos.y = -50.0
+        """
+
         self._m_owner.set_position(pos)
 
     def add_force(self, force: Vector2D) -> None:

@@ -179,7 +179,7 @@ class Game:
         for da in dead_actors:
             da.delete()
 
-    def _process_output(self) -> None:  # TODO
+    def _process_output(self) -> None:
         # Clear color-buffer to gray
         GL.glClearColor(0.86, 0.86, 0.86, 1.0)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
@@ -232,7 +232,6 @@ class Game:
     def _load_data(self) -> None:
         # Ship and its components (composed in constructor)
         self._m_ship = Ship(self)
-        self._m_ship.set_position(Vector2D(100.0, 100.0))
         self._m_ship.set_rotation(maths.PI_OVER_TWO)
         # TODO uncomment asteroids
         """

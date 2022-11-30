@@ -76,14 +76,15 @@ class Actor:
     def compute_world_transform(self) -> None:
         if self._m_recompute_world_transform:
             self._m_recompute_world_transform = False
-            # Scale then rotate then translate
-            self._m_world_transform = Matrix4.create_scale_matrix_uniform(
-                self._m_scale)
-            self._m_world_transform = self._m_world_transform * \
-                Matrix4.create_rotation_matrix_z(self._m_rotation)
-            self._m_world_transform = self._m_world_transform * \
-                Matrix4.create_translation_matrix(
-                    Vector3D(self._m_position.x, self._m_position.y, 0.0))
+
+            # Calculate transformation matrices
+            temp_scale = Matrix4.create_scale_matrix_uniform(self._m_scale)
+            temp_rotation = Matrix4.create_rotation_matrix_z(self._m_rotation)
+            temp_translation = Matrix4.create_translation_matrix(
+                Vector3D(self._m_position.x, self._m_position.y, 0.0))
+
+            # Multiply in order
+            self._m_world_transform = temp_scale * temp_rotation * temp_translation
 
             # Inform components that world transform updated
             for comp in self._m_components:

@@ -39,9 +39,9 @@ class InputMoveComponent(MoveComponent):
         # Rotation movement
         rotation_speed = 0.0
         if keyb_state[self._m_clockwise_key]:
-            rotation_speed += self._m_max_rotation_speed
-        if keyb_state[self._m_counter_clockwise_key]:
             rotation_speed -= self._m_max_rotation_speed
+        if keyb_state[self._m_counter_clockwise_key]:
+            rotation_speed += self._m_max_rotation_speed
         self.set_rotation_speed(rotation_speed)
 
     def get_forward_speed(self) -> float:
