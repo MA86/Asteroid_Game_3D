@@ -10,10 +10,10 @@ from shader import Shader
 class SpriteComponent(Component):
     def __init__(self, owner: Actor, draw_order: int = 100) -> None:
         super().__init__(owner)
-        self.m_texture: sdl2.SDL_Texture = None
+        self.m_texture: Texture = None
         self.m_draw_order: int = draw_order
-        self.m_text_width = ctypes.c_int()
-        self.m_text_height = ctypes.c_int()
+        self.m_text_width: int = 0
+        self.m_text_height: int = 0
 
         self._m_owner.get_game().add_sprite(self)
 
@@ -26,14 +26,20 @@ class SpriteComponent(Component):
     def draw(self, shader: Shader) -> None:
         # Scale quad mesh by width/height of texture
         scale_mat: Matrix4 = Matrix4.create_scale_matrix_xyz(
-            float(self.m_text_width.value + 128),
-            float(self.m_text_height.value + 128),  # TODO fix
+            float(self.m_text_width),
+            float(self.m_text_height),  # TODO fix
             1.0)
         # Calculate world transform matrix
         world_mat: Matrix4 = scale_mat * self._m_owner.get_world_transform()
 
+        # Note: since sprites use the same shader/mesh,
+        # the game first sets them active before sprite draws
+
         # Set world transform matrix in shader
         shader.set_matrix_uniform("uWorldTransform", world_mat)
+
+        # Set current texture [can set diff. texture for each draw!]
+        self.m_texture.set_active()
 
         # Draw quad mesh
         GL.glDrawElements(
@@ -43,19 +49,18 @@ class SpriteComponent(Component):
             None
         )
 
-    def set_texture(self, texture: sdl2.SDL_Texture) -> None:  # TODO fix
+    def set_texture(self, texture: Texture) -> None:
         self.m_texture = texture
 
-        # Query height/width for texture
-        sdl2.SDL_QueryTexture(texture, None, None,
-                              ctypes.byref(self.m_text_width),
-                              ctypes.byref(self.m_text_height))
+        # Set width/height
+        self.m_text_width = texture.get_width()
+        self.m_text_height = texture.get_height()
 
     def get_draw_order(self) -> int:
         return self.m_draw_order
 
-    def get_text_height(self) -> ctypes.c_int:
+    def get_text_height(self) -> int:
         return self.m_text_height
 
-    def get_text_width(self) -> ctypes.c_int:
+    def get_text_width(self) -> int:
         return self.m_text_width

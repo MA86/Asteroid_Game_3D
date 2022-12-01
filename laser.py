@@ -13,7 +13,7 @@ class Laser(Actor):
 
         # Create components
         sc = SpriteComponent(self)
-        sc.set_texture(game.get_texture(b"assets/laser.png"))
+        sc.set_texture(game.get_texture("assets/laser.png"))
 
         self._m_move = MoveComponent(self)
         self._m_move.set_mass(0.1)

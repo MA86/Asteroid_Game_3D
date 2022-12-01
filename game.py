@@ -9,6 +9,7 @@ from vertex_array import VertexArray
 from shader import Shader
 from randoms import Random
 from maths import Vector2D, Matrix4
+from texture import Texture
 import maths
 import ctypes
 
@@ -121,7 +122,7 @@ class Game:
         self._m_sprite_vertices.delete()
         self._m_sprite_shader.unload()
         del self._m_sprite_shader
-        sdlimage.IMG_Quit()  # TODO remove this?
+        sdlimage.IMG_Quit()
         sdl2.SDL_GL_DeleteContext(self._m_context)
         sdl2.SDL_DestroyWindow(self._m_window)
         sdl2.SDL_Quit()
@@ -246,31 +247,24 @@ class Game:
             actor = self._m_actors.pop()
             actor.delete()
         for texture in self._m_textures.values():
-            sdl2.SDL_DestroyTexture(texture)
+            texture.unload()
+            texture.delete()
         self._m_textures.clear()
 
     # TODO Complete redo?
-    def get_texture(self, filename) -> sdl2.SDL_Texture:
-        # Search for texture in dictionary
-        texture = self._m_textures.get(filename)
+    def get_texture(self, file_name: str) -> Texture:
+        # Search for texture in dic first
+        texture: Texture = self._m_textures.get(file_name)
         if texture != None:
             return texture
         else:
-            # Load image TODO
-            surface = sdlimage.IMG_Load(filename)
-            if surface == None:
-                sdl2.SDL_Log(b"Failed to load image file: ", filename)
-                return None
-            # Create texture
-            texture = sdl2.SDL_CreateTextureFromSurface(
-                self._m_renderer, surface)  # TODO
-            sdl2.SDL_FreeSurface(surface)
-            if texture == None:
-                sdl2.SDL_Log(b"Failed to create texture: ", filename)
-                return None
-
-            # Add texture to dic
-            self._m_textures[filename] = texture
+            texture = Texture()
+            if texture.load(file_name):
+                # Add texture to dic
+                self._m_textures[file_name] = texture
+            else:
+                texture.delete()
+                texture = None
         return texture
 
     def add_actor(self, actor: Actor) -> None:
