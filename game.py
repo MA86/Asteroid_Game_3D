@@ -15,7 +15,7 @@ import ctypes
 
 from ship import Ship
 from actor import State
-#from asteroid import Asteroid
+from asteroid import Asteroid
 
 
 class Game:
@@ -202,7 +202,7 @@ class Game:
 
     def _load_shaders(self) -> bool:
         self._m_sprite_shader = Shader()
-        if not self._m_sprite_shader.load("shaders/transform.vert", "shaders/basic.frag"):
+        if not self._m_sprite_shader.load("shaders/sprite.vert", "shaders/sprite.frag"):
             return False
         self._m_sprite_shader.set_active()
 
@@ -214,11 +214,11 @@ class Game:
 
     def _create_sprite_vertices(self) -> None:
         # TODO Add alpha and ...
-        vertices: ctypes.Array = (ctypes.c_float * 12)(
-            -0.5, 0.5, 0.0,     # vertex 0
-            0.5, 0.5, 0.0,      # vertex 1
-            0.5, -0.5, 0.0,     # vertex 2
-            -0.5, -0.5, 0.0     # vertex 3
+        vertices: ctypes.Array = (ctypes.c_float * 20)(
+            -0.5, 0.5, 0.0, 0.0, 0.0,    # Top left
+            0.5, 0.5, 0.0, 1.0, 0.0,     # Top right
+            0.5, -0.5, 0.0, 1.0, 1.0,    # Bottom right
+            -0.5, -0.5, 0.0, 0.0, 1.0    # Bottom left
         )
 
         indices: ctypes.Array = (ctypes.c_uint * 6)(
@@ -235,12 +235,11 @@ class Game:
         self._m_ship = Ship(self)
         self._m_ship.set_rotation(maths.PI_OVER_TWO)
         # TODO uncomment asteroids
-        """
+
         # Asteroids and its components (composed in constructor)
         num_asteroids = range(1, 21)
         for i in num_asteroids:
             Asteroid(self)
-        """
 
     def _unload_data(self) -> None:
         while len(self._m_actors) != 0:
@@ -251,7 +250,6 @@ class Game:
             texture.delete()
         self._m_textures.clear()
 
-    # TODO Complete redo?
     def get_texture(self, file_name: str) -> Texture:
         # Search for texture in dic first
         texture: Texture = self._m_textures.get(file_name)

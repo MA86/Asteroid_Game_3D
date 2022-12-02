@@ -27,7 +27,7 @@ class SpriteComponent(Component):
         # Scale quad mesh by width/height of texture
         scale_mat: Matrix4 = Matrix4.create_scale_matrix_xyz(
             float(self.m_text_width),
-            float(self.m_text_height),  # TODO fix
+            float(self.m_text_height),
             1.0)
         # Calculate world transform matrix
         world_mat: Matrix4 = scale_mat * self._m_owner.get_world_transform()

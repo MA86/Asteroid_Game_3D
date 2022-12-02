@@ -26,17 +26,24 @@ class VertexArray:
         GL.glGenBuffers(1, ctypes.byref(self._m_vertex_buffer_id))
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self._m_vertex_buffer_id)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self._m_num_verts *
-                        3 * ctypes.sizeof(ctypes.c_float), vertices, GL.GL_STATIC_DRAW)
+                        5 * ctypes.sizeof(ctypes.c_float), vertices, GL.GL_STATIC_DRAW)
         # Create index buffer, copy indices to it
         GL.glGenBuffers(1, ctypes.byref(self._m_index_buffer_id))
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self._m_index_buffer_id)
         GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self._m_num_indices *
                         ctypes.sizeof(ctypes.c_uint), indices, GL.GL_STATIC_DRAW)
 
-        # Identify attributes in the vertex array (only one attribute, position!)
+        # Identify attributes in the vertex array (two attribs: pos, texture coord.)
         GL.glEnableVertexAttribArray(0)
         GL.glVertexAttribPointer(
-            0, 3, GL.GL_FLOAT, GL.GL_FALSE, ctypes.sizeof(ctypes.c_float) * 3, None)
+            0, 3, GL.GL_FLOAT, GL.GL_FALSE,
+            ctypes.sizeof(ctypes.c_float) * 5,  # Stride is 5 floats
+            None)
+        GL.glEnableVertexAttribArray(1)
+        GL.glVertexAttribPointer(
+            1, 2, GL.GL_FLOAT, GL.GL_FALSE,
+            ctypes.sizeof(ctypes.c_float) * 5,
+            ctypes.c_void_p(ctypes.sizeof(ctypes.c_float) * 3))  # Offset is 3 floats from start
 
     def delete(self) -> None:
         # Delete in reverse

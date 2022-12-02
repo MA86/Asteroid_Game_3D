@@ -42,7 +42,7 @@ class Texture:
         GL.glBindTexture(GL.GL_TEXTURE_2D, self._m_texture_id)
 
         GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, format, surface.contents.w,
-                        surface.contents.h, 0, format, GL.GL_UNSIGNED_BYTE, surface)
+                        surface.contents.h, 0, format, GL.GL_UNSIGNED_BYTE, ctypes.c_char_p(surface.contents.pixels))
 
         # Free image data
         sdl2.SDL_FreeSurface(surface)
