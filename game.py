@@ -185,7 +185,11 @@ class Game:
         GL.glClearColor(0.86, 0.86, 0.86, 1.0)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
-        # TODO Enable alpha blending on color buffer
+        # Enable alpha blending on color buffer
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendFunc(
+            GL.GL_SRC_ALPHA,
+            GL.GL_ONE_MINUS_SRC_ALPHA)
 
         # First, set shader and vertex array active 'every frame'
         self._m_sprite_shader.set_active()
